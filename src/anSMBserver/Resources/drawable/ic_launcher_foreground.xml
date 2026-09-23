@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- anSMBserver launcher icon - foreground artwork.
+     Source: owner-supplied SVG "anSMBserver - V6" (phone + file page + share nodes +
+     network connector). Transcribed to Android vector XML; no third-party assets, no
+     bitmap data, colours unchanged.
+
+     Adaptive-icon geometry: the artwork content spans x[146.3, 878.9] y[43.9, 980.1] of
+     the 1024 viewport (its centre is already 512,512). It is scaled by 0.7285 and then
+     translated by (138.6, 139) so the whole artwork fits the central 72-of-108 safe zone
+     (x,y in [171.5, 852.5]) and survives every launcher mask. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
+    <group
+        android:scaleX="0.7285"
+        android:scaleY="0.7285"
+        android:translateX="138.6"
+        android:translateY="139">
+
+        <!-- 手机外壳 -->
+        <path
+            android:fillColor="#B6BCC5"
+            android:pathData="M279.771,43.886 H744.229 C792.709,43.886 832,83.177 832,131.657 V570.514 H192 V131.657 C192,83.177 231.291,43.886 279.771,43.886 Z" />
+
+        <!-- 手机正面 -->
+        <path
+            android:fillColor="#EDFEFF"
+            android:pathData="M294.4,73.143 H729.6 C761.855,73.143 788.114,99.402 788.114,131.657 V541.257 H235.886 V131.657 C235.886,99.402 262.145,73.143 294.4,73.143 Z" />
+
+        <!-- 屏幕 -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M279.771,153 C279.771,140.7 289.7,130.771 302,130.771 H722 C734.3,130.771 744.229,140.7 744.229,153 V512 H279.771 Z" />
+
+        <!-- 小药丸听筒 (rect x466 y96 w92 h10 rx5) -->
+        <path
+            android:fillColor="#B6BCC5"
+            android:pathData="M471,96 H553 A5,5 0 0 1 558,101 A5,5 0 0 1 553,106 H471 A5,5 0 0 1 466,101 A5,5 0 0 1 471,96 Z" />
+
+        <!-- 单摄像头 (circle 590,101 r6) -->
+        <path
+            android:fillColor="#424D5C"
+            android:pathData="M584,101 A6,6 0 1 0 596,101 A6,6 0 1 0 584,101 Z" />
+
+        <!-- 文件页 -->
+        <path
+            android:fillColor="#12CBFF"
+            android:pathData="M439,275 C439,265 447,257 457,257 H553 L597,301 V423 C597,433 589,441 579,441 H457 C447,441 439,433 439,423 Z" />
+
+        <!-- 文件页折角 -->
+        <path
+            android:fillColor="#AEF0FB"
+            android:pathData="M553,257 V292 C553,302 561,310 571,310 H597 Z" />
+
+        <!-- 文件内部两条线 (rect 461,332 94x10 rx5) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M466,332 H550 A5,5 0 0 1 555,337 A5,5 0 0 1 550,342 H466 A5,5 0 0 1 461,337 A5,5 0 0 1 466,332 Z" />
+
+        <!-- 文件内部两条线 (rect 461,365 70x10 rx5) -->
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M466,365 H526 A5,5 0 0 1 531,370 A5,5 0 0 1 526,375 H466 A5,5 0 0 1 461,370 A5,5 0 0 1 466,365 Z" />
+
+        <!-- 共享符号：左节点 (circle 453,468 r13) -->
+        <path
+            android:fillColor="#12CBFF"
+            android:pathData="M440,468 A13,13 0 1 0 466,468 A13,13 0 1 0 440,468 Z" />
+
+        <!-- 共享符号：右节点 (circle 571,468 r13) -->
+        <path
+            android:fillColor="#12CBFF"
+            android:pathData="M558,468 A13,13 0 1 0 584,468 A13,13 0 1 0 558,468 Z" />
+
+        <!-- 共享符号：中央节点 (circle 512,492 r15) -->
+        <path
+            android:fillColor="#12CBFF"
+            android:pathData="M497,492 A15,15 0 1 0 527,492 A15,15 0 1 0 497,492 Z" />
+
+        <!-- 共享符号：左连接 (stroke round) -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#12CBFF"
+            android:strokeWidth="10"
+            android:strokeLineCap="round"
+            android:pathData="M465,470 L499,487" />
+
+        <!-- 共享符号：右连接 (stroke round) -->
+        <path
+            android:fillColor="#00000000"
+            android:strokeColor="#12CBFF"
+            android:strokeWidth="10"
+            android:strokeLineCap="round"
+            android:pathData="M559,470 L525,487" />
+
+        <!-- 手机底部指示线 (rect 480,523 64x7 rx3.5) -->
+        <path
+            android:fillColor="#B6BCC5"
+            android:pathData="M483.5,523 H540.5 A3.5,3.5 0 0 1 544,526.5 A3.5,3.5 0 0 1 540.5,530 H483.5 A3.5,3.5 0 0 1 480,526.5 A3.5,3.5 0 0 1 483.5,523 Z" />
+
+        <!-- 网络连接：外框 -->
+        <path
+            android:fillColor="#424D5C"
+            android:pathData="M146.285714,702.171429 a117.028571,117.028571 0 0 1 117.028572,-117.028572 h497.371428 a117.028571,117.028571 0 1 1 0,234.057143 H263.314286 a117.028571,117.028571 0 0 1 -117.028572,-117.028571 z" />
+
+        <!-- 网络连接：内描边 -->
+        <path
+            android:fillColor="#B6BCC5"
+            android:pathData="M760.685714,614.4 a87.771429,87.771429 0 0 1 0,175.542857 H263.314286 a87.771429,87.771429 0 0 1 0,-175.542857 h497.371428 z m-497.371428,-29.257143 a117.028571,117.028571 0 1 0 0,234.057143 h497.371428 a117.028571,117.028571 0 1 0 0,-234.057143 H263.314286 z" />
+
+        <!-- 网络连接：三个指示灯 -->
+        <path
+            android:fillColor="#12CBFF"
+            android:pathData="M234.057143,702.171429 a29.257143,29.257143 0 1 1 58.514286,0 a29.257143,29.257143 0 1 1 -58.514286,0 z M336.457143,702.171429 a29.257143,29.257143 0 1 1 58.514286,0 a29.257143,29.257143 0 1 1 -58.514286,0 z M702.171429,702.171429 a29.257143,29.257143 0 0 1 29.257142,-29.257143 h29.257143 a29.257143,29.257143 0 1 1 0,58.514285 h-29.257143 a29.257143,29.257143 0 0 1 -29.257142,-29.257142 z" />
+
+        <!-- 基座平面 -->
+        <path
+            android:fillColor="#EFEFEF"
+            android:pathData="M146.285714,863.085714 h731.428572 v87.771429 H146.285714 z" />
+
+        <!-- 基座下沿 -->
+        <path
+            android:fillColor="#B2B2B2"
+            android:pathData="M146.285714,936.228571 h731.428572 v14.628572 H146.285714 z" />
+
+        <!-- 基座中沿 -->
+        <path
+            android:fillColor="#DEDEDE"
+            android:pathData="M146.285714,921.6 h731.428572 v14.628572 H146.285714 z" />
+
+        <!-- 分享块（绿） -->
+        <path
+            android:fillColor="#47C85F"
+            android:pathData="M248.685714,833.828571 h526.628572 v146.285715 H248.685714 z" />
+
+        <!-- 分享块下沿 -->
+        <path
+            android:fillColor="#169048"
+            android:pathData="M248.685714,965.485714 h526.628572 v14.628572 H248.685714 z" />
+
+        <!-- 分享块上沿 -->
+        <path
+            android:fillColor="#67F373"
+            android:pathData="M248.685714,833.828571 h526.628572 v14.628571 H248.685714 z" />
+    </group>
+</vector>

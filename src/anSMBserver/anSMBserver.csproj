@@ -1,0 +1,140 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <AssemblyName>anSMBserver</AssemblyName>
+    <RootNamespace>anSMBserver</RootNamespace>
+    <OutputType>Exe</OutputType>
+    <SupportedOSPlatformVersion>23.0</SupportedOSPlatformVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <!-- The ApplicationId is the product identity. Changing it creates a NEW app
+         identity on a device, so upgrading an installation made with an older id needs
+         one uninstall. The service component name follows the same identity: its package
+         prefix is "com.github.mycccc.ansmbserver.services.SmbService" - an
+         identity-string only, with the service logic untouched. -->
+    <ApplicationId>com.github.mycccc.ansmbserver</ApplicationId>
+    <ApplicationTitle>anSMBserver</ApplicationTitle>
+    <ApplicationVersion>1</ApplicationVersion>
+    <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
+    <AndroidSdkDirectory>$(HOME)/Library/Android/sdk</AndroidSdkDirectory>
+    <JavaSdkDirectory>$(HOME)/.jdk/jdk-17.0.20.1+1/Contents/Home</JavaSdkDirectory>
+    <!-- Embed assemblies into the APK so on-device runs do NOT depend on .NET
+         fast-deployment (files/.__override__). Fast-deploy can leave STALE assemblies
+         on the device, which makes a fresh process run OLD code; embedding keeps the
+         APK self-contained and makes on-device behaviour reproducible. -->
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+  </PropertyGroup>
+
+  <!-- The layered host: SMBLibrary runs on a physical Android device
+       (runtime -> TCP listener -> NEGOTIATE/SESSION_SETUP/TREE_CONNECT ->
+       CREATE/READ/WRITE through the INTFileStore abstraction).
+
+       - The share is served by AndroidFileSystemAdapter (strict exception
+         discipline; the storage root is supplied by the host).
+       - PortableApi.cs lives in Shared/ inside this project (picked up by the SDK's
+         default compile items): it only exposes the port-parameterized Start/Connect
+         overloads without touching SMBLibrary source. -->
+  <ItemGroup>
+    <ProjectReference Include="../../SMBLibrary/SMBLibrary/SMBLibrary.csproj" />
+    <ProjectReference Include="../../SMBLibrary/Utilities/Utilities.csproj" />
+  </ItemGroup>
+
+  <!-- QR matrix encoder for the SMB URL QR code. Verified MIT, zero transitive
+       dependencies, net10.0-android compatible. -->
+  <ItemGroup>
+    <PackageReference Include="Net.Codecrete.QrCodeGenerator" Version="3.2.1" />
+  </ItemGroup>
+
+  <!-- Release build policy: Release enables trimming/linking; SMBLibrary + Utilities
+       are rooted (TrimmerRootAssembly) so the trimmer keeps the reflection/CryptoConfig
+       paths the SMB engine depends on (upstream issue #129). BUILD-ONLY policy - it
+       does not alter SMBLibrary or host source/behaviour. -->
+  <ItemGroup Condition="'$(Configuration)' == 'Release'">
+    <!-- The Android SDK's ILLink.targets target `_FixRootAssembly` evaluates the batch
+         condition Condition="'%(RootMode)' == 'EntryPoint'" over @(TrimmerRootAssembly),
+         so every item must define RootMode, otherwise MSBuild raises MSB4096. Adding
+         RootMode="All" only makes the long-standing default explicit: the rooted
+         assembly set (SMBLibrary + Utilities) and the rooting strength are unchanged.
+         Verified identical in workloads 36.1.2 and 36.1.69. -->
+    <TrimmerRootAssembly Include="SMBLibrary" RootMode="All" />
+    <TrimmerRootAssembly Include="Utilities" RootMode="All" />
+  </ItemGroup>
+
+  <!-- Release profile = trimmed + interpreter.
+       Default-AOT Release is environment/toolchain BLOCKED at restore: it needs a
+       host-side Microsoft.NETCore.App.Runtime.Mono.osx-x64 pack (to run the AOT
+       compiler on macOS) that is absent from the reachable feed. Keeping trimming
+       ON but disabling AOT + using the interpreter (the same runtime mode Debug
+       already runs) still exercises real trimming (#129) while avoiding that host
+       pack. BUILD-ONLY: no SMBLibrary/Utilities change, no extra linker roots. -->
+  <!-- Release-unblock: Release enables trimming, and PublishTrimmed=true makes the
+       .NET SDK infer a *host* publish RID for the build machine
+       (UseDefaultPublishRuntimeIdentifier=true -> PublishRuntimeIdentifier=osx-x64),
+       which is then appended to RuntimeIdentifiers
+       (Microsoft.NET.RuntimeIdentifierInference.targets:130-154). Restore then demands
+       Microsoft.NETCore.App.Runtime.Mono.osx-x64, a pack absent from the reachable feed,
+       so the Release build fails with NU1102 before any compile. Disabling ONLY that
+       default keeps the host RID out of the Android publish; trimming stays ON
+       (PublishTrimmed=true is unchanged), so #129 is still exercised.
+       Property-evaluation evidence: RuntimeIdentifiers becomes
+       android-arm64;android-x64 and PublishRuntimeIdentifier becomes empty, while
+       PublishTrimmed remains true. BUILD-ONLY change: no source, SMBLibrary or
+       behaviour change. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
+    <UseDefaultPublishRuntimeIdentifier>false</UseDefaultPublishRuntimeIdentifier>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <AndroidEnableAot>false</AndroidEnableAot>
+    <RunAOTCompilation>false</RunAOTCompilation>
+    <AndroidUseInterpreter>true</AndroidUseInterpreter>
+    <AndroidAotMode>Interpreter</AndroidAotMode>
+    <EmbedAssembliesIntoApk>true</EmbedAssembliesIntoApk>
+
+    <!-- Pin the release artifact format to the APK. The SDK default is "aab;apk", which
+         would also emit an AAB (plus an unsigned AAB intermediate); the distribution
+         channel is GitHub + signed APK, so the release produces the APK only.
+         Release-only deliberately: the Debug path is untouched. The actual artifact set
+         is verified from the build output, not assumed. -->
+    <AndroidPackageFormat>apk</AndroidPackageFormat>
+
+    <!-- A Release build MUST use the project's own release signing identity.
+         AndroidKeyStore=true switches the SDK's _ResolveAndroidSigningKey from the
+         per-machine debug key to the AndroidSigning* properties below
+         (Xamarin.Android.Common.targets, _ResolveAndroidSigningKey /
+         _CreateAndroidDebugSigningKey).
+         The keystore file lives OUTSIDE the repo; the two passwords are NEVER stored in
+         this file, in the repo or in any doc - they are injected per host through the
+         environment (AndroidSigningStorePass / AndroidSigningKeyPass are read as MSBuild
+         properties from environment variables).
+         Debug signing is deliberately untouched: nothing here applies unless
+         '$(Configuration)' == 'Release'. -->
+    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidSigningKeyAlias>ansmbserver</AndroidSigningKeyAlias>
+    <!-- keytool lower-cases aliases, so the requested 'anSMBserver' is stored as
+         'ansmbserver'. -->
+    <AndroidSigningKeyStore Condition="'$(AndroidSigningKeyStore)' == '' And '$(OS)' == 'Windows_NT'">$(UserProfile)\.android-keys\anSMBServer-release.jks</AndroidSigningKeyStore>
+    <AndroidSigningKeyStore Condition="'$(AndroidSigningKeyStore)' == '' And '$(OS)' != 'Windows_NT'">$(HOME)/.android-keys/anSMBServer-release.jks</AndroidSigningKeyStore>
+  </PropertyGroup>
+
+  <!-- Release-only fail-fast guard: a Release build must FAIL when the release signing
+       material is missing, so that it can never silently fall back to the per-machine
+       debug key. Hooked before _ResolveAndroidSigningKey (which the SDK's _Sign and Sign
+       targets both depend on) and before SignAndroidPackage, so it fires on both the APK
+       and the AAB paths.
+       No secret is referenced or printed here: only property names, a path and existence
+       are reported. -->
+  <Target Name="_AnsmbValidateReleaseSigning"
+          Condition="'$(Configuration)' == 'Release'"
+          BeforeTargets="_ResolveAndroidSigningKey;SignAndroidPackage;Sign">
+    <Error Condition="'$(AndroidKeyStore)' != 'True'"
+           Text="Release build requires the project release signing identity (AndroidKeyStore=true); refusing to fall back to debug signing." />
+    <Error Condition="'$(AndroidSigningKeyAlias)' == ''"
+           Text="AndroidSigningKeyAlias is not set (expected 'ansmbserver')." />
+    <Error Condition="!Exists('$(AndroidSigningKeyStore)')"
+           Text="Release keystore not found at '$(AndroidSigningKeyStore)'. Expected ~/.android-keys/anSMBServer-release.jks on macOS or %USERPROFILE%\.android-keys\anSMBServer-release.jks on Windows." />
+    <Error Condition="'$(AndroidSigningStorePass)' == '' Or '$(AndroidSigningKeyPass)' == ''"
+           Text="AndroidSigningStorePass / AndroidSigningKeyPass are not set. Inject them through the environment for the build session; they are never stored in the repo." />
+  </Target>
+
+</Project>

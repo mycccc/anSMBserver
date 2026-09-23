@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- anSMBserver launcher icon - adaptive background.
+     Single value so the icon background can be adjusted without touching any artwork.
+     Chosen to separate the artwork's white surfaces (#FFFFFF / #EDFEFF) from the mask. -->
+<resources>
+    <color name="ic_launcher_background">#E9EDF2</color>
+</resources>

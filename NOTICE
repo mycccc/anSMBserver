@@ -1,0 +1,375 @@
+anSMBserver — NOTICE (third-party components, attributions and required license texts)
+======================================================================================
+
+This file accompanies the anSMBserver distribution: the source in this repository and the
+APK/AAB built from it. It lists the third-party components that the distributed application
+uses or contains, keeps their copyright notices, reproduces the license texts that must
+accompany the work, and maps the LGPL-3.0 section 4 obligations for the combined distribution
+(section 4), whose remaining open points are interpretation items explicitly flagged as such.
+
+anSMBserver's own source code is licensed under the Apache License, Version 2.0 — see the
+`LICENSE` file in this repository. The components listed below are **not** covered by that
+license; each remains under its own terms.
+
+------------------------------------------------------------------------------
+1. Components
+------------------------------------------------------------------------------
+
+| Component | Version / revision in use | License | Copyright / author | Where the source is |
+|---|---|---|---|---|
+| SMBLibrary, together with its `Utilities` project | vendored snapshot; `<Version>1.5.7.1</Version>` | **LGPL-3.0-or-later** | Copyright © Tal Aloni 2014-2026 (SMBLibrary) and 2005-2023 (Utilities) | in this repository: `SMBLibrary/` (the upstream `License.txt` is under that directory); upstream: https://github.com/TalAloni/SMBLibrary |
+| Net.Codecrete.QrCodeGenerator | NuGet package 3.2.1 | **MIT** | Copyright (c) 2018 Manuel Bleichenbacher | upstream: https://github.com/manuelbl/QrCodeGenerator |
+| .NET runtime, Mono and .NET for Android (the managed and native runtime bundled in the app: `lib/<abi>/libassembly-store.so`, `libmonosgen-2.0.so`, `libmonodroid.so`, `libxamarin-app.so`, `libarc.bin.so`, `libSystem.*.Native.so`, and the runtime support classes in `classes.dex`) | net10.0-android; Android workload 36.1.69 (build host) / 36.1.2 (authoring host) | **MIT** | Copyright (c) .NET Foundation and Contributors | https://github.com/dotnet/runtime and https://github.com/dotnet/android |
+
+Scope note on the distributed artifact: the signed APK was reviewed by inventorying its
+entries (31 entries). The managed assemblies — including the LGPL-covered SMBLibrary — are not
+stored as separate `.dll` files; they are packed inside `lib/<abi>/libassembly-store.so`. No
+third-party **Apache-2.0** component is bundled in the application; Apache-2.0 appears only in
+build tooling (for example bundletool), which is not redistributed inside the APK.
+
+------------------------------------------------------------------------------
+2. Modifications to the LGPL-covered library (change record)
+------------------------------------------------------------------------------
+
+**Current status (2026-09-18): the vendored SMBLibrary is PRISTINE.** The local modifications
+recorded below were reverted in full: `SMBLibrary/Server/ConnectionManager.cs` and
+`SMBLibrary/Server/SMBServer.cs` were restored byte-for-byte from the pristine upstream snapshot
+retained as a local audit baseline, and the file `SMBLibrary/Server/SmbDiag.cs`, which had
+been added by this project, was deleted. A full-tree comparison against that snapshot now reports
+666 upstream files vs 666 vendored files with **zero** added, deleted or modified files. No
+GPL section 5(a) modification notice is required in, or present in, any library file.
+
+The paragraphs and table below are the **historical record of the modification as it existed
+between 2026-09-08 and 2026-09-18**. They are retained unmodified for the audit trail and no
+longer describe the current state of the vendored source.
+
+The vendored SMBLibrary source in this repository is **modified** by the anSMBserver project.
+The changes are observation-only (a diagnostic log sink) and were recorded as
+behaviour-neutral. Three files differ from upstream:
+
+| File | Change | Date |
+|---|---|---|
+| `SMBLibrary/Server/SmbDiag.cs` | **added** by this project — P1.6.4 diagnostic log sink; writes to logcat only and deliberately bypasses the application's log path | 2026-09-08 |
+| `SMBLibrary/Server/ConnectionManager.cs` | **modified** — three observation calls (`SmbDiag.Log(...)`) | 2026-09-08 |
+| `SMBLibrary/Server/SMBServer.cs` | **modified** — observation-only keep-alive logging (`SmbDiag.Log(...)`) | 2026-09-08 |
+
+Dates are the working-tree modification dates of those files.
+
+**Satisfied (2026-09-15):** the GNU GPL v3 — whose terms LGPL-3.0 incorporates, as stated in the
+LGPL's opening paragraph — requires a modified work to carry prominent notices stating that it was
+modified and giving a relevant date (GNU GPL v3 section 5(a)). Each of the three files above now
+carries such a notice, added on 2026-09-15 and recording the modification date 2026-09-08. The
+notices are placed **after** the upstream LGPL header, which is kept intact and unmodified; the
+added file also states the license it is under (GNU GPL v3 section 5(b)).
+
+------------------------------------------------------------------------------
+3. Corresponding source
+------------------------------------------------------------------------------
+
+* SMBLibrary + Utilities: the complete source, **in pristine upstream form** (no local
+  modifications as of 2026-09-18), is part of this
+  repository under `SMBLibrary/`. Upstream:
+  https://github.com/TalAloni/SMBLibrary
+* QrCodeGenerator: https://github.com/manuelbl/QrCodeGenerator
+* .NET runtime, Mono and .NET for Android: https://github.com/dotnet/runtime ,
+  https://github.com/dotnet/android
+
+------------------------------------------------------------------------------
+4. LGPL Combined Work (section 4) — obligations mapped; interpretation items remain
+------------------------------------------------------------------------------
+
+Facts as they stand today:
+
+* SMBLibrary (LGPL-3.0-or-later) is used as **vendored source**, not as a dynamically loaded
+  shared library supplied by the system.
+* The library's own Release build merges its `Utilities` project into a single `SMBLibrary.dll`
+  (ILRepack — an upstream build step), and this project builds it that way.
+* The resulting managed assemblies are compiled into the application and shipped **inside** the
+  signed APK/AAB (packed in `lib/<abi>/libassembly-store.so`).
+* No shared-library mechanism is used to link the library into the application.
+
+LGPL-3.0 section 4 ("Combined Works") requires, among other things, the following. Quoted
+verbatim from the license text copied in section 5.1:
+
+  a) Give prominent notice with each copy of the Combined Work that
+  the Library is used in it and that the Library and its use are
+  covered by this License.
+
+  b) Accompany the Combined Work with a copy of the GNU GPL and this license
+  document.
+
+  d) Do one of the following:
+
+      0) Convey the Minimal Corresponding Source under the terms of this
+      License, and the Corresponding Application Code in a form
+      suitable for, and under terms that permit, the user to
+      recombine or relink the Application with a modified version of
+      the Linked Version to produce a modified Combined Work, in the
+      manner specified by section 6 of the GNU GPL for conveying
+      Corresponding Source.
+
+      1) Use a suitable shared library mechanism for linking with the
+      Library.  A suitable mechanism is one that (a) uses at run time
+      a copy of the Library already present on the user's computer
+      system, and (b) will operate properly with a modified version
+      of the Library that is interface-compatible with the Linked
+      Version.
+
+Status (2026-09-15): the LGPL review is complete for the **text requirements**, and the routes are
+now fixed as follows.
+
+* Section 4(a) — the prominent notice that the Library is used and is covered by this License — is
+  provided by this file.
+* Section 4(b) — "Accompany the Combined Work with a copy of the GNU GPL and this license
+  document" — is provided by this file (LGPL text, section 5.1) together with the separate file
+  `COPYING.GPL-3.0` (GNU GPL v3 text, section 5.0).
+* Section 4(c) is **not triggered**: the application displays no copyright notices during
+  execution.
+* Section 4(d) is taken via **option 0**: the Minimal Corresponding Source and the Corresponding
+  Application Code are both in this repository, and the rebuild/relink notes in
+  `docs/release-and-verification.md` describe how to use them.
+* Section 4(e) is **not triggered** under the project's reading (this distribution is not conveyed
+  in a "User Product" of the project's own manufacture).
+* Section 5(a) is **not triggered** as of 2026-09-18: the vendored library carries no local
+  modification (section 2 of this file), so no modified work is conveyed. The notices listed in
+  the historical record of section 2 were removed together with the reverted changes.
+
+Remaining open points are **interpretation items**, not open text requirements. They are recorded
+as open notes for this release rather than as settled text: for example whether "accompany"
+additionally requires the texts inside the APK, and how thoroughly the relink form must be
+documented. This file does not claim that those interpretations are settled by the license text.
+
+------------------------------------------------------------------------------
+5. Required license texts
+------------------------------------------------------------------------------
+
+5.0 GNU GPL v3 — provided as the separate file `COPYING.GPL-3.0` (674 lines, copied verbatim
+    from https://www.gnu.org/licenses/gpl-3.0.txt). It is not duplicated in this file.
+
+5.1 SMBLibrary + Utilities — GNU Lesser General Public License v3.0 (LGPL-3.0-or-later)
+    copied verbatim from SMBLibrary/License.txt
+
+                   GNU LESSER GENERAL PUBLIC LICENSE
+                       Version 3, 29 June 2007
+
+ Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+ Everyone is permitted to copy and distribute verbatim copies
+ of this license document, but changing it is not allowed.
+
+
+  This version of the GNU Lesser General Public License incorporates
+the terms and conditions of version 3 of the GNU General Public
+License, supplemented by the additional permissions listed below.
+
+  0. Additional Definitions.
+
+  As used herein, "this License" refers to version 3 of the GNU Lesser
+General Public License, and the "GNU GPL" refers to version 3 of the GNU
+General Public License.
+
+  "The Library" refers to a covered work governed by this License,
+other than an Application or a Combined Work as defined below.
+
+  An "Application" is any work that makes use of an interface provided
+by the Library, but which is not otherwise based on the Library.
+Defining a subclass of a class defined by the Library is deemed a mode
+of using an interface provided by the Library.
+
+  A "Combined Work" is a work produced by combining or linking an
+Application with the Library.  The particular version of the Library
+with which the Combined Work was made is also called the "Linked
+Version".
+
+  The "Minimal Corresponding Source" for a Combined Work means the
+Corresponding Source for the Combined Work, excluding any source code
+for portions of the Combined Work that, considered in isolation, are
+based on the Application, and not on the Linked Version.
+
+  The "Corresponding Application Code" for a Combined Work means the
+object code and/or source code for the Application, including any data
+and utility programs needed for reproducing the Combined Work from the
+Application, but excluding the System Libraries of the Combined Work.
+
+  1. Exception to Section 3 of the GNU GPL.
+
+  You may convey a covered work under sections 3 and 4 of this License
+without being bound by section 3 of the GNU GPL.
+
+  2. Conveying Modified Versions.
+
+  If you modify a copy of the Library, and, in your modifications, a
+facility refers to a function or data to be supplied by an Application
+that uses the facility (other than as an argument passed when the
+facility is invoked), then you may convey a copy of the modified
+version:
+
+   a) under this License, provided that you make a good faith effort to
+   ensure that, in the event an Application does not supply the
+   function or data, the facility still operates, and performs
+   whatever part of its purpose remains meaningful, or
+
+   b) under the GNU GPL, with none of the additional permissions of
+   this License applicable to that copy.
+
+  3. Object Code Incorporating Material from Library Header Files.
+
+  The object code form of an Application may incorporate material from
+a header file that is part of the Library.  You may convey such object
+code under terms of your choice, provided that, if the incorporated
+material is not limited to numerical parameters, data structure
+layouts and accessors, or small macros, inline functions and templates
+(ten or fewer lines in length), you do both of the following:
+
+   a) Give prominent notice with each copy of the object code that the
+   Library is used in it and that the Library and its use are
+   covered by this License.
+
+   b) Accompany the object code with a copy of the GNU GPL and this license
+   document.
+
+  4. Combined Works.
+
+  You may convey a Combined Work under terms of your choice that,
+taken together, effectively do not restrict modification of the
+portions of the Library contained in the Combined Work and reverse
+engineering for debugging such modifications, if you also do each of
+the following:
+
+   a) Give prominent notice with each copy of the Combined Work that
+   the Library is used in it and that the Library and its use are
+   covered by this License.
+
+   b) Accompany the Combined Work with a copy of the GNU GPL and this license
+   document.
+
+   c) For a Combined Work that displays copyright notices during
+   execution, include the copyright notice for the Library among
+   these notices, as well as a reference directing the user to the
+   copies of the GNU GPL and this license document.
+
+   d) Do one of the following:
+
+       0) Convey the Minimal Corresponding Source under the terms of this
+       License, and the Corresponding Application Code in a form
+       suitable for, and under terms that permit, the user to
+       recombine or relink the Application with a modified version of
+       the Linked Version to produce a modified Combined Work, in the
+       manner specified by section 6 of the GNU GPL for conveying
+       Corresponding Source.
+
+       1) Use a suitable shared library mechanism for linking with the
+       Library.  A suitable mechanism is one that (a) uses at run time
+       a copy of the Library already present on the user's computer
+       system, and (b) will operate properly with a modified version
+       of the Library that is interface-compatible with the Linked
+       Version.
+
+   e) Provide Installation Information, but only if you would otherwise
+   be required to provide such information under section 6 of the
+   GNU GPL, and only to the extent that such information is
+   necessary to install and execute a modified version of the
+   Combined Work produced by recombining or relinking the
+   Application with a modified version of the Linked Version. (If
+   you use option 4d0, the Installation Information must accompany
+   the Minimal Corresponding Source and Corresponding Application
+   Code. If you use option 4d1, you must provide the Installation
+   Information in the manner specified by section 6 of the GNU GPL
+   for conveying Corresponding Source.)
+
+  5. Combined Libraries.
+
+  You may place library facilities that are a work based on the
+Library side by side in a single library together with other library
+facilities that are not Applications and are not covered by this
+License, and convey such a combined library under terms of your
+choice, if you do both of the following:
+
+   a) Accompany the combined library with a copy of the same work based
+   on the Library, uncombined with any other library facilities,
+   conveyed under the terms of this License.
+
+   b) Give prominent notice with the combined library that part of it
+   is a work based on the Library, and explaining where to find the
+   accompanying uncombined form of the same work.
+
+  6. Revised Versions of the GNU Lesser General Public License.
+
+  The Free Software Foundation may publish revised and/or new versions
+of the GNU Lesser General Public License from time to time. Such new
+versions will be similar in spirit to the present version, but may
+differ in detail to address new problems or concerns.
+
+  Each version is given a distinguishing version number. If the
+Library as you received it specifies that a certain numbered version
+of the GNU Lesser General Public License "or any later version"
+applies to it, you have the option of following the terms and
+conditions either of that published version or of any later version
+published by the Free Software Foundation. If the Library as you
+received it does not specify a version number of the GNU Lesser
+General Public License, you may choose any version of the GNU Lesser
+General Public License ever published by the Free Software Foundation.
+
+  If the Library as you received it specifies that a proxy can decide
+whether future versions of the GNU Lesser General Public License shall
+apply, that proxy's public statement of acceptance of any version is
+permanent authorization for you to choose that version for the
+Library.
+
+
+5.2 Net.Codecrete.QrCodeGenerator — MIT License
+    copied verbatim from the upstream LICENSE file (github.com/manuelbl/QrCodeGenerator), retrieved 2026-09-15
+
+MIT License
+
+Copyright (c) 2018 Manuel Bleichenbacher
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+
+5.3 .NET runtime / Mono / .NET for Android — MIT License
+    copied verbatim from the .NET SDK LICENSE.txt
+
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+---
+End of NOTICE. Component list, modification record and the open LGPL item: sections 1-4.

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- anSMBserver launcher icon - legacy fallback for API 23-25 (minSdk 23), where
+     mipmap-anydpi-v26 is not consulted.
+     Deliberate single-source-of-truth choice: it reuses the same artwork drawable
+     (safe-zone fitted) over the adaptive background colour, so the icon geometry is
+     defined in exactly one file. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@color/ic_launcher_background" />
+    <item android:drawable="@drawable/ic_launcher_foreground" />
+</layer-list>

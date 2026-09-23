@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- anSMBserver launcher icon - adaptive (API 26+).
+     Background is a single colour resource; the foreground is the owner-supplied artwork
+     (see Resources/drawable/ic_launcher_foreground.xml), already fitted to the safe zone. -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@color/ic_launcher_background" />
+    <foreground android:drawable="@drawable/ic_launcher_foreground" />
+</adaptive-icon>
