@@ -39,6 +39,37 @@ this is a client limitation, not a server failure. Details per client below.
 
 The share name is **`Internal`**; the shared root is `/storage/emulated/0/`.
 
+## Windows: the simplest way to connect
+
+Windows Explorer has no port field (see the UNC row above), so the simplest route on Windows is
+**Total Commander** with the **SMBClient4TotalCommander** file-system plugin (WFX):
+
+```text
+https://github.com/dkxce/SMBClient4TotalCommander
+```
+
+Its stated features are what make it suitable here: it can use a **non-standard SMB port** (not
+445), and it supports **SMBLibrary** — the SMB stack anSMBserver is built on. It therefore connects
+straight to `<phone-ip>:4450`: Windows' system SMB service on port 445 is not involved, and **no
+port forwarding or address mapping is required**.
+
+Steps:
+
+1. **Install the plugin.** Download it from the project's *Releases* page — `SMBStorage.wfx64` for
+   64-bit Total Commander, `SMBStorage.wfx` for the 32-bit build (the `SMBStorage.zip` archive
+   contains both). In Total Commander open *Configuration → Options → Plugins → File system plugins
+   (.WFX) → Configure → Add* and select the downloaded file; if Total Commander offers to copy it
+   into its own plugin folder, accept.
+2. **Fill in the connection.** Open the plugin from the drive list (it appears under *Network
+   Neighborhood*) and enter: server = the phone's LAN IP shown in the app's **INFO** section, port =
+   the SMB port shown there (**4450** by default), username and password = the configured
+   credentials (`ansmb` / `ansmb` by default). The domain field can stay empty.
+3. **Connect.** Open the **`Internal`** share — the shared root is `/storage/emulated/0/`.
+   The connection is then established through the plugin using the SMB service provided by anSMBserver.
+
+For the one operation that is not verified on the 1.0 artifact — reading file data back out of the
+share — see [Limitations](limitations.md).
+
 ## What has been verified on 1.0
 
 On a real device, with the release build:
